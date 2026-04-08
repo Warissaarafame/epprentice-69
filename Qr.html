@@ -4,71 +4,74 @@
   <meta charset="UTF-8">
   <title>QR Code สั่งอาหารกลางวัน</title>
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
       background: #ffffff;
       margin: 0;
-      padding: 40px;
+      padding: 60px 20px;
     }
-
     h1 {
-      font-size: 48px;
+      font-size: 56px;
       margin-bottom: 10px;
     }
-
     p {
-      font-size: 24px;
-      margin-top: 0;
+      font-size: 26px;
+      margin: 5px 0;
       color: #333;
     }
-
     #qrcode {
-      margin: 30px auto;
+      margin: 40px auto;
     }
-
     .hint {
-      font-size: 22px;
-      margin-top: 20px;
+      font-size: 24px;
       color: #006400;
-    }
-
-    .url {
       margin-top: 20px;
-      font-size: 18px;
+    }
+    .footer {
+      margin-top: 40px;
+      font-size: 20px;
       color: #555;
     }
   </style>
 
-  <!-- ไลบรารีสร้าง QR Code -->
+  <!-- ✅ เรียกไลบรารี QR Code ให้ถูกต้อง -->
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 </head>
 <body>
 
   <h1>📱 สแกนเพื่อสั่งอาหารกลางวัน</h1>
-  <p>เปิดด้วยมือถือ • กรอกชื่อ • เลือกเมนู • บันทึก</p>
+  <p>กรอกชื่อ • เลือกเมนู • ใส่จำนวน • บันทึก</p>
 
   <canvas id="qrcode"></canvas>
 
-  <div class="hint">✅ สั่ง / แก้ไขข้อมูลของตนเองได้</div>
+  <div class="hint">
+    ✅ พนักงานตรวจสอบและแก้ไขข้อมูลของตนเองได้
+  </div>
 
-  <div class="url">
-    URL: http://10.189.248.30:5500/order.html
+  <div class="footer">
+    https://warissarafame.github.io/eprentice-69/order.html
   </div>
 
   <script>
-    const orderUrl = "http://10.189.248.30:5500/order.html";
+    const orderUrl =
+      "https://warissarafame.github.io/eprentice-69/order.html";
 
     QRCode.toCanvas(
       document.getElementById("qrcode"),
       orderUrl,
       {
-        width: 400,   // ขนาด QR ใหญ่ เห็นชัดบนจอ
+        width: 450,
         margin: 2
       },
       function (error) {
-        if (error) console.error(error);
+        if (error) {
+          console.error(error);
+          alert("สร้าง QR ไม่สำเร็จ");
+        }
       }
     );
   </script>
