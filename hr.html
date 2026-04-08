@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>HR - สรุปยอดอาหาร</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #999;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    input[type=number] {
+      width: 80px;
+    }
+    button {
+      margin-top: 10px;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>สรุปยอดอาหารกลางวัน (HR)</h2>
+
+<p>
+  ✅ โรงงานช่วย <b>คนละ 10 บาท</b> (ไม่ขึ้นกับจำนวนกล่อง)
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ชื่อพนักงาน</th>
+      <th>เมนูอาหาร</th>
+      <th>จำนวนกล่อง</th>
+      <th>ราคา / กล่อง</th>
+      <th>โรงงานช่วย</th>
+      <th>พนักงานต้องจ่าย</th>
+    </tr>
+  </thead>
+  <tbody id="table"></tbody>
+</table>
+
+<h3 id="total">รวมทั้งวัน: 0 บาท</h3>
+
+<button onclick="exportExcel()">Export Excel</button>
+<button onclick="resetDay()">เริ่มวันใหม่</button>
+
+<!-- โหลดข้อมูล -->
+<script src="data.js"></script>
+
+<script>
+function renderTable() {
+  const orders = getOrders();
+  const tbody = document.getElementById("table");
+  tbody.innerHTML = "";
+
+  let grandTotal = 0;
+
+  orders.forEach((o, index) => {
+    const support = factorySupport; // ✅ คนละ 10 บาท
+    const pay = o.price
+      ? (o.price * o.qty) - factorySupport
+      : 0;
+
+    grandTotal += pay;
+
+    tbody.innerHTML += `
+      <tr>
+        <td>${o.name}</td>
+        <td>${o.menu}</td>
+        <td>${o.qty}</td>
+        <td>
+          <input type="number"
+                 min="0"
+                 value="${o.price || ''}"
+                 onchange="updatePrice(${index}, this.value)">
+        </td>
+        <td>${support}</td>
+        <td>${pay}</td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("total").innerText =
+    "รวมทั้งวัน: " + grandTotal + " บาท";
+}
+
+// อัปเดตราคาอาหารต่อคน
+function updatePrice(index, value) {
+  const orders = getOrders();
+  orders[index].price = Number(value);
+  saveOrders(orders);
+  renderTable();
+}
+
+// Export Excel (CSV) — แก้ภาษาไทยเพี้ยนด้วย BOM
+function exportExcel() {
+  const orders = getOrders();
+  if (orders.length === 0) {
+    alert("ไม่มีข้อมูลออเดอร์");
+    return;
+  }
+
+  let csv =
+    "\uFEFFชื่อพนักงาน,เมนูอาหาร,จำนวนกล่อง,ราคาอาหาร,โรงงานช่วย,พนักงานต้องจ่าย\n";
+
+  orders.forEach(o => {
+    const support = factorySupport;
+    const pay = (o.price * o.qty) - factorySupport;
+
+    csv += `${o.name},${o.menu},${o.qty},${o.price},${support},${pay}\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `lunch-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+// เริ่มวันใหม่
+function resetDay() {
+  if (confirm("ยืนยันเริ่มวันใหม่?")) {
+    clearOrders();
+    renderTable();
+  }
+}
+
+// โหลดข้อมูลตอนเปิดหน้า
+renderTable();
+</script>
+
+</body>
+</html>

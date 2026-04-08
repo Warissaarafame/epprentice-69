@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>สั่งอาหารกลางวัน</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    input {
+      width: 250px;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 6px 10px;
+      margin-right: 5px;
+    }
+    #message {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h2>สั่งอาหารกลางวัน</h2>
+<p>✅ สามารถสั่งและแก้ไขข้อมูลได้ตลอดเวลา</p>
+
+<label>ชื่อพนักงาน</label><br>
+<input id="name"><br>
+
+<label>เมนูอาหาร</label><br>
+<input id="menu" placeholder="เช่น กะเพราไก่"><br>
+
+<label>จำนวนกล่อง</label><br>
+<input id="qty" type="number" min="1" value="1"><br><br>
+
+<button onclick="submitOrder()">บันทึกการสั่ง</button>
+<button onclick="findMyOrder()">ค้นหา / แก้ไขข้อมูลของฉัน</button>
+
+<p id="message"></p>
+
+<!-- โหลด data.js -->
+<script src="data.js"></script>
+
+<script>
+let editIndex = null;
+
+// บันทึกหรือแก้ไขออเดอร์
+function submitOrder() {
+  const name = document.getElementById("name").value.trim();
+  const menu = document.getElementById("menu").value.trim();
+  const qty = Number(document.getElementById("qty").value);
+
+  if (!name || !menu || qty < 1) {
+    alert("กรุณากรอกข้อมูลให้ครบ");
+    return;
+  }
+
+  const orders = getOrders();
+
+  if (editIndex !== null) {
+    // ✅ แก้ไขข้อมูลเดิม
+    orders[editIndex] = { ...orders[editIndex], name, menu, qty };
+    saveOrders(orders);
+    document.getElementById("message").innerText =
+      "✅ แก้ไขข้อมูลเรียบร้อย";
+    editIndex = null;
+  } else {
+    // ✅ เพิ่มข้อมูลใหม่
+    addOrder({ name, menu, qty });
+    document.getElementById("message").innerText =
+      "✅ บันทึกการสั่งเรียบร้อย";
+  }
+
+  document.getElementById("menu").value = "";
+  document.getElementById("qty").value = 1;
+}
+
+// ค้นหาและโหลดข้อมูลของพนักงานเอง
+function findMyOrder() {
+  const name = document.getElementById("name").value.trim();
+  if (!name) {
+    alert("กรุณาใส่ชื่อพนักงานก่อนค้นหา");
+    return;
+  }
+
+  const orders = getOrders();
+  const index = orders.findIndex(o => o.name === name);
+
+  if (index === -1) {
+    document.getElementById("message").innerText =
+      "❌ ไม่พบข้อมูลการสั่งของคุณ";
+    editIndex = null;
+    return;
+  }
+
+  const order = orders[index];
+  document.getElementById("menu").value = order.menu;
+  document.getElementById("qty").value = order.qty;
+
+  editIndex = index;
+  document.getElementById("message").innerText =
+    "✏️ พบข้อมูลของคุณ สามารถแก้ไขได้";
+}
+</script>
+
+</body>
+</html>
