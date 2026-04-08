@@ -2,79 +2,72 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>QR Code สั่งอาหารกลางวัน</title>
-
+  <title>สแกนสั่งอาหารกลางวัน</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #ffffff;
       margin: 0;
-      padding: 60px 20px;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
     }
+
+    .container {
+      text-align: center;
+    }
+
     h1 {
       font-size: 56px;
       margin-bottom: 10px;
     }
+
     p {
       font-size: 26px;
       margin: 5px 0;
-      color: #333;
     }
-    #qrcode {
-      margin: 40px auto;
+
+    img {
+      margin: 30px 0;
+      width: 420px;
+      height: 420px;
     }
+
     .hint {
-      font-size: 24px;
+      font-size: 22px;
       color: #006400;
-      margin-top: 20px;
+      margin-top: 10px;
     }
-    .footer {
-      margin-top: 40px;
-      font-size: 20px;
-      color: #555;
+
+    .url {
+      margin-top: 25px;
+      font-size: 18px;
+      color: #444;
     }
   </style>
-
-  <!-- ✅ เรียกไลบรารี QR Code ให้ถูกต้อง -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 </head>
 <body>
 
-  <h1>📱 สแกนเพื่อสั่งอาหารกลางวัน</h1>
-  <p>กรอกชื่อ • เลือกเมนู • ใส่จำนวน • บันทึก</p>
+  <div class="container">
+    <h1>📱 สแกนเพื่อสั่งอาหารกลางวัน</h1>
+    <p>กรอกชื่อ • เลือกเมนู • ใส่จำนวน • บันทึก</p>
 
-  <canvas id="qrcode"></canvas>
+    <!-- ✅ QR Code (เสถียรที่สุด) -->
+    <img
+      src="https://api.qrserver.com/v1/create-qr-code/?size=420x420&data=https://warissaarafame.github.io/epprentice-69/order.html
+      alt="QR Code สั่งอาหารกลางวัน">
 
-  <div class="hint">
-    ✅ พนักงานตรวจสอบและแก้ไขข้อมูลของตนเองได้
+    <div class="hint">
+      ✅ สั่งและแก้ไขข้อมูลของตนเองได้
+    </div>
+
+    <div class="url">
+      https://warissaarafame.github.io/epprentice-69/order.html
+    </div>
   </div>
-
-  <div class="footer">
-    https://warissarafame.github.io/eprentice-69/order.html
-  </div>
-
-  <script>
-    const orderUrl =
-      "https://warissarafame.github.io/eprentice-69/order.html";
-
-    QRCode.toCanvas(
-      document.getElementById("qrcode"),
-      orderUrl,
-      {
-        width: 450,
-        margin: 2
-      },
-      function (error) {
-        if (error) {
-          console.error(error);
-          alert("สร้าง QR ไม่สำเร็จ");
-        }
-      }
-    );
-  </script>
 
 </body>
 </html>
